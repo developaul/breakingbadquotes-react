@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import styled from '@emotion/styled';
-import Frases from '../../learning-react-moderno/breakingbad/src/components/Frases';
+import Frases from './components/Frases';
+import Spinner from './components/Spinner';
 
 // Styled Componenets
 const Contenedor = styled.div`
@@ -29,12 +30,17 @@ const Boton = styled.button`
 
 function App() {
 	// State de frases
-	const [ frase, guardarFrase ] = useState({});
+	const [ frase, guardarFrase ] 		= useState({});
+	const [ spinner, changeSpinner ] 	= useState( false );
 
 	const consultarAPI 	= async () => {
+		changeSpinner( true );
+
 		const api 		= await fetch( 'https://breaking-bad-quotes.herokuapp.com/v1/quotes' );
 		const frase		= await api.json();		
 		guardarFrase( frase[0] );
+
+		changeSpinner( false );
 	}
 
 	useEffect( () => {
@@ -43,8 +49,18 @@ function App() {
 
 	return (
 		<Contenedor>
+			{ spinner ? 
+				(
+					<Spinner />
+				)
+				:
+				(
+					<Frases
+						frase={ frase }
+					/>
+				)
+			}
 
-			
 			<Boton
 				onClick={ consultarAPI }
 			>
